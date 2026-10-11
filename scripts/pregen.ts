@@ -10,7 +10,7 @@
 // requestIds are stable (ny-<piece>-<step>-<attempt>), so re-running never starts duplicate work.
 
 import { execFile } from "node:child_process";
-import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, stat, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { promisify } from "node:util";
 import * as A from "../lib/arcade";
@@ -84,6 +84,7 @@ async function download(url: string, name: string): Promise<string> {
     try {
       const out = path.join(IMG_DIR, `${name}.jpg`);
       await exec("sips", ["-Z", "1400", "-s", "format", "jpeg", "-s", "formatOptions", "82", file, "--out", out]);
+      if (out !== file) await unlink(file);
       return `/demo/${name}.jpg`;
     } catch {
       // no sips: keep the original

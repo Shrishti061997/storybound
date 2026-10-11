@@ -1,5 +1,37 @@
 {
-  "generatedAt": null,
-  "categories": {},
-  "pieces": {}
+  "generatedAt": "2026-10-11T21:06:40.157Z",
+  "categories": {
+    "Scarves": {
+      "categoryId": "687b34ae-209d-461d-b681-4b0426400be8",
+      "world": "print"
+    },
+    "Ribbon Scarf": {
+      "categoryId": "27b5f126-6464-4629-927e-be965be6ad5b",
+      "world": "print"
+    },
+    "Pendant Necklace": {
+      "categoryId": "cb985ad9-3fe0-4163-8aea-3555dbdfaac9",
+      "world": "jewelry"
+    },
+    "Drum Lampshades": {
+      "categoryId": "feab7433-7db7-4b7b-94aa-8a28e5b7f57b",
+      "world": "print"
+    }
+  },
+  "pieces": {
+    "c1-summer": {
+      "key": "c1-summer",
+      "patternId": "cmv4bcfoy01mgpa107bilwvxx",
+      "patternImage": "/demo/c1-summer-pattern.jpg",
+      "kind": "arcade",
+      "productId": "6ea64ee9-d690-4b83-818d-6cead387af31",
+      "title": "100% Cotton Lightweight Gauze Scarf, Embroidered Hem",
+      "selectionLabel": "Cotton Lightweight Gauze • 26\" x 26\" • Embroidered Hem",
+      "unitPrice": {
+        "amount": "19.41",
+        "currency": "USD"
+      },
+      "image": "/demo/c1-summer-product.jpg"
+    }
+  }
 }
