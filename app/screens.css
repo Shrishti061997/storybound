@@ -261,6 +261,7 @@
 .day-rows .linkish { grid-column: 1 / -1; justify-self: start; min-height: 32px; font-size: 0.85rem; }
 
 @media (min-width: 900px) {
+  .story > .dock { position: static; }
   .h-page { font-size: 3rem; }
   .welcome-grid { display: grid; grid-template-columns: 1.05fr 1fr; column-gap: 72px; align-items: start; }
   .welcome-grid .welcome-hero { padding-top: 34px; }

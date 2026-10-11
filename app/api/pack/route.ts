@@ -17,7 +17,8 @@ export async function GET() {
       if (piece.productId) {
         const p = await getProduct(piece.productId);
         piece.live = { unitPrice: p.unitPrice, imageUrl: p.imageUrl, images: p.images?.map((i) => i.url), title: p.title, selectionLabel: p.selectionLabel };
-      } else if (piece.patternId) {
+      } else if (piece.patternId && !piece.patternImage) {
+        // art with a local copy needs no fresh URL; only products are asked for live prices
         const p = await getPattern(piece.patternId);
         piece.live = { unitPrice: null, patternUrl: p.imageUrl };
       }
