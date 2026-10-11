@@ -1,0 +1,53 @@
+/* Screen-specific styles. Tokens and shared pieces live in globals.css. */
+
+/* ---- Welcome ---- */
+.welcome-hero { padding-top: 18px; }
+.welcome-hero .eyebrow { margin-bottom: 12px; }
+.welcome-hero .lede { margin-top: 18px; }
+
+.welcome-swatches {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr 0.9fr;
+  gap: 12px;
+  align-items: start;
+  margin: 34px 0 6px;
+  padding-right: 6px;
+}
+.welcome-swatch { margin: 0; }
+.welcome-swatch .swatch { aspect-ratio: 3 / 4; }
+.welcome-swatch.w2 { margin-top: 26px; }
+.welcome-swatch.w3 { margin-top: 8px; }
+.welcome-swatch figcaption { margin-top: 10px; font-size: 0.62rem; }
+.welcome-note { position: absolute; right: 2px; bottom: -30px; }
+
+.welcome-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.welcome-steps li { display: grid; grid-template-columns: 64px 1fr; gap: 10px; align-items: baseline; }
+.welcome-steps p { color: var(--ink-soft); font-size: 0.95rem; }
+
+/* ---- Season toggle ---- */
+.season-toggle {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1.5px solid var(--ink);
+  border-radius: 24px 22px 25px 23px;
+  padding: 3px;
+  background: var(--paper);
+}
+.season-toggle button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 38px;
+  min-width: 104px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 20px;
+  background: transparent;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 400ms ease, color 400ms ease;
+}
+.season-toggle button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
