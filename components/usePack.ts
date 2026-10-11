@@ -30,7 +30,8 @@ export function usePack(): State {
   return state;
 }
 
-export const productImage = (p?: LivePiece) => p?.live?.imageUrl || p?.image;
-export const patternImage = (p?: LivePiece) => p?.live?.patternUrl || p?.patternImage;
+// Pre-made pieces have a local copy that never expires and loads at once; pieces made live use Arcade's fresh URL.
+export const productImage = (p?: LivePiece) => p?.image || p?.live?.imageUrl;
+export const patternImage = (p?: LivePiece) => p?.patternImage || p?.live?.patternUrl;
 /** Only a price Arcade returned on this page load counts as live. */
 export const livePrice = (p?: LivePiece) => p?.live?.unitPrice ?? null;
