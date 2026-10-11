@@ -109,7 +109,7 @@ button { font: inherit; color: inherit; }
   bottom: 0;
   margin: 0 calc(var(--gutter) * -1);
   padding: 12px var(--gutter) calc(14px + env(safe-area-inset-bottom));
-  background: linear-gradient(to top, var(--paper) 72%, transparent);
+  background: linear-gradient(to top, var(--paper) 84%, transparent);
   display: flex;
   flex-direction: column;
   gap: 8px;

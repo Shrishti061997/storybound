@@ -7,9 +7,11 @@
     "build": "next build",
     "start": "next start",
     "pregen": "tsx --env-file=.env.local scripts/pregen.ts",
-    "scarf": "tsx --env-file=.env.local scripts/one-scarf.ts"
+    "scarf": "tsx --env-file=.env.local scripts/pregen.ts --only scarf-summer",
+    "categories": "tsx --env-file=.env.local scripts/categories.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.133.0",
     "next": "^16.4.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",

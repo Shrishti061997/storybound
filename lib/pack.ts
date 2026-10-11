@@ -22,3 +22,17 @@ export type DemoPack = {
   categories: Record<string, { categoryId: string; world: string }>;
   pieces: Record<string, PackPiece>;
 };
+
+export type LivePiece = PackPiece & {
+  /** Fresh from Arcade on this request. Absent when Arcade could not be reached. */
+  live?: { unitPrice: Money | null; imageUrl?: string; images?: string[]; title?: string; selectionLabel?: string; patternUrl?: string };
+};
+
+export type PackResponse = { generatedAt: string | null; pieces: Record<string, LivePiece>; live: boolean; error?: string };
+
+export function formatMoney(m?: Money | null) {
+  if (!m) return null;
+  const n = Number(m.amount);
+  if (!Number.isFinite(n)) return null;
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: m.currency || "USD" }).format(n);
+}
