@@ -4,11 +4,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArrowIcon, InkDivider, InkUnderline } from "@/components/Ink";
 import { Masthead } from "@/components/Masthead";
+import { SEASON_LABEL, SeasonPicker, useSeason } from "@/components/Season";
 import { api } from "@/components/useJob";
 import { useTrip } from "@/components/useTrip";
+import type { Chapter } from "@/lib/places";
+import { MOODS, STYLES } from "@/lib/prompts";
 
-const STYLES = ["Painterly", "Botanical", "Graphic", "Quiet"];
-const LOVES = ["Greens", "Wildflowers", "Water", "Old stone", "Snow", "Gold light"];
+const LOVES = ["Greens", "Wildflowers", "Water", "Old stone", "Snow", "Gold light", "Night lights", "Markets"];
 
 type Option = { key: string; label: string; values: { value: string; label: string; available: boolean }[] };
 type CategoriesResponse = { categories: { name: string; options?: Option[] }[] };
@@ -16,10 +18,13 @@ type CategoriesResponse = { categories: { name: string; options?: Option[] }[] }
 export default function YouPage() {
   const router = useRouter();
   const { trip, update } = useTrip();
+  const { season } = useSeason();
   const [metals, setMetals] = useState<{ label: string; available: boolean }[]>([]);
   const [fabrics, setFabrics] = useState<string[]>([]);
   const [matching, setMatching] = useState(false);
   const [matchNote, setMatchNote] = useState<string | null>(null);
+  const [writing, setWriting] = useState(false);
+  const [note, setNote] = useState<string | null>(null);
 
   // metal and fabric choices come from Arcade, never from a hardcoded list
   useEffect(() => {
@@ -57,15 +62,60 @@ export default function YouPage() {
     reader.readAsDataURL(file);
   }
 
+  async function write() {
+    setNote(null);
+    if (trip.demo) return router.push("/story");
+    if (!trip.days.length) return router.push("/trip");
+    setWriting(true);
+    try {
+      const out = await api.post<{ chapters: Chapter[] }>("/api/plan", {
+        days: trip.days,
+        season,
+        mood: trip.mood,
+        style: trip.style,
+        metal: trip.metal,
+        loves: trip.loves,
+        dislikes: trip.dislikes,
+        travelers: trip.travelers,
+      });
+      // new chapters mean new pieces: clear any earlier Arcade jobs for this trip
+      update({ chapters: out.chapters, art: {} });
+      router.push("/story");
+    } catch (e) {
+      setNote(e instanceof Error ? e.message : "Your chapters could not be written just now. Try again in a moment.");
+    } finally {
+      setWriting(false);
+    }
+  }
+
   return (
     <main className="screen">
       <Masthead back="/trip" backLabel="Your trip" />
-      <div className="screen-body">
+      <div className="screen-body narrow">
         <p className="eyebrow">About you</p>
         <h1 className="h-page">
           What do you reach for?
           <InkUnderline />
         </h1>
+
+        <section className="form-block">
+          <div className="row between">
+            <h3>The mood of this trip</h3>
+            <span className="hand">sets the tone</span>
+          </div>
+          <div className="chips">
+            {MOODS.map((m) => (
+              <button key={m} type="button" className="chip" aria-pressed={trip.mood === m} onClick={() => update({ mood: m })}>
+                {m}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section className="form-block">
+          <h3>Season</h3>
+          <SeasonPicker />
+        </section>
 
         <section className="form-block">
           <h3>Style</h3>
@@ -140,11 +190,17 @@ export default function YouPage() {
             </div>
           ) : null}
         </section>
+
+        {note ? <p className="notice" role="status">{note}</p> : null}
       </div>
 
       <div className="dock">
-        <button className="btn" onClick={() => router.push("/story")}>
-          Write my chapters <ArrowIcon size={20} />
+        <button className="btn" onClick={write} disabled={writing}>
+          {writing ? "Writing your chapters…" : (
+            <>
+              Write my {trip.mood.toLowerCase()} {SEASON_LABEL[season].toLowerCase()} story <ArrowIcon size={20} />
+            </>
+          )}
         </button>
       </div>
     </main>

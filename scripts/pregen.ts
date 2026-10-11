@@ -15,7 +15,8 @@ import path from "node:path";
 import { promisify } from "node:util";
 import * as A from "../lib/arcade";
 import type { DemoPack, PackPiece } from "../lib/pack";
-import { PALETTES, toWinter } from "../lib/palettes";
+import type { Season } from "../components/Season";
+import { PALETTES, toSeason } from "../lib/palettes";
 import { CHARMS } from "../lib/places";
 import { ARCADE_PROMPTS, LAMPSHADE_MOTIFS } from "../lib/prompts";
 
@@ -113,15 +114,26 @@ async function savePattern(key: string, patternId: string) {
   return p;
 }
 
-/** Summer to winter: read the clusters, map each to the winter palette, recolor. */
-async function winterOf(key: string, summerPatternId: string) {
+const winterOf = (key: string, summerPatternId: string) => recolorTo(key, summerPatternId, "winter");
+
+const editing = new Map<string, Promise<unknown>>();
+
+/** Read a pattern's color clusters, map each to the target season's palette, recolor. One edit per source at a time. */
+function recolorTo(key: string, sourcePatternId: string, target: Season): Promise<string> {
+  const next = (editing.get(sourcePatternId) || Promise.resolve()).catch(() => {}).then(() => recolorNow(key, sourcePatternId, target));
+  editing.set(sourcePatternId, next);
+  return next;
+}
+
+async function recolorNow(key: string, summerPatternId: string, target: Season) {
   if (done(key, "patternId")) return pack.pieces[key].patternId!;
   const clusterCount = 6;
-  const { clusters } = await A.recolorClusters(rid(`${key}-clusters`), summerPatternId, clusterCount);
-  const colors = clusters.map((c) => ({ clusterId: c.clusterId, color: toWinter(c.color) }));
-  if (colors.every((c, i) => c.color.toLowerCase() === clusters[i].color.toLowerCase())) colors[0].color = "#1B4965";
+  // cluster preparations expire, so each run prepares them again under a fresh requestId
+  const { clusters } = await A.recolorClusters(rid(`${key}-clusters-${Date.now().toString(36)}`), summerPatternId, clusterCount);
+  const colors = clusters.map((c) => ({ clusterId: c.clusterId, color: toSeason(c.color, target) }));
+  if (colors.every((c, i) => c.color.toLowerCase() === clusters[i].color.toLowerCase())) colors[0].color = PALETTES[target][1];
   log(`${key} recolor`, clusters.map((c, i) => `${c.color}>${colors[i].color}`).join(" "));
-  const job = await run(`${key} recolor`, () => A.recolor(rid(`${key}-recolor`), summerPatternId, colors, clusterCount));
+  const job = await run(`${key} recolor`, () => A.recolor(rid(`${key}-recolor-${colors.map((c) => c.color.slice(1, 3)).join("")}`), summerPatternId, colors, clusterCount));
   const patternId = job.result?.patternId;
   if (!patternId) throw new Error(`${key}: recolor finished without a patternId`);
   await savePattern(key, patternId);
@@ -153,15 +165,40 @@ async function product(key: string, patternId: string, categoryName: string, pre
   const detail = await chooseSelections(cat.categoryId, prefer);
   if (!detail.canManufacture) throw new Error(`${key}: selections cannot be manufactured: ${JSON.stringify(detail.selections)}`);
   const base = { patternId, categoryId: cat.categoryId, selections: detail.selections };
-  let job: A.Job;
-  try {
-    job = await run(`${key} product`, () => A.createProduct({ requestId: rid(`${key}-product`), ...base }));
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
-    if (!/fit|aspect|crop/i.test(msg)) throw e;
-    log(`${key} product`, `needs a fit (${msg.slice(0, 120)}); retrying with fill`);
-    job = await run(`${key} product`, () => A.createProduct({ requestId: rid(`${key}-product-fill`), ...base, fit: { mode: "fill" } }));
+  // Arcade decides how the artwork fits: as is, filled, or (for long narrow sizes) cropped and tiled
+  const src = await A.getPattern(patternId);
+  // long narrow sizes (the 2" x 35" ribbon) need a crop in the product's own width-to-height ratio
+  const size = /^(\d+(?:\.\d+)?)x(\d+(?:\.\d+)?)$/.exec(detail.selections.size || "");
+  const ratio = size ? Number(size[1]) / Number(size[2]) : 1;
+  const cropFor = (r: number) => {
+    let width = src.width;
+    let height = Math.round(width / r);
+    if (height > src.height) {
+      height = src.height;
+      width = Math.round(height * r);
+    }
+    return { left: Math.floor((src.width - width) / 2), top: Math.floor((src.height - height) / 2), width: Math.max(16, width), height: Math.max(16, height) };
+  };
+  const fits: [string, A.Fit | undefined][] = [
+    ["", undefined],
+    ["-fill", { mode: "fill" }],
+    ["-crop", { mode: "crop", crop: cropFor(ratio), zoomLevel: 1 }],
+    ["-crop2", { mode: "crop", crop: cropFor(1 / ratio), zoomLevel: 1 }],
+  ];
+  let job: A.Job | undefined;
+  let lastError: unknown;
+  for (const [suffix, fit] of fits) {
+    try {
+      job = await run(`${key} product${suffix}`, () => A.createProduct({ requestId: rid(`${key}-product${suffix}`), ...base, ...(fit ? { fit } : {}) }));
+      break;
+    } catch (e) {
+      lastError = e;
+      const msg = e instanceof Error ? e.message : String(e);
+      if (!/fit|aspect|crop|fill|tile|ratio/i.test(msg)) throw e;
+      log(`${key} product${suffix}`, msg.slice(0, 140));
+    }
   }
+  if (!job) throw lastError;
   await saveProduct(key, job.result?.productId);
 }
 
@@ -288,6 +325,25 @@ async function main() {
     "nails-winter": () => concept("c5-winter", ARCADE_PROMPTS.nails.winter, PALETTES.winter),
     ...Object.fromEntries(CHARMS.map((c) => [c.key, () => concept(c.key, ARCADE_PROMPTS.charm(c.symbol), PALETTES.summer)])),
     lampshade: () => lampshade("lamp"),
+    // spring and autumn: recolors of the summer designs, so the New York example exists in all four seasons
+    ...Object.fromEntries(
+      (["spring", "autumn"] as const).flatMap((target) => [
+        [`scarf-${target}`, async () => product(`c1-${target}`, await recolorTo(`c1-${target}`, await pattern("c1-summer", ARCADE_PROMPTS.scarf, { colors: PALETTES.summer }), target), "Scarves")],
+        [`ribbon-${target}`, async () => {
+          const summer = pack.pieces["c3-summer"]?.patternId;
+          if (!summer) throw new Error("Run the ribbon task first");
+          await product(`c3-${target}`, await recolorTo(`c3-${target}`, summer, target), "Ribbon Scarf");
+        }],
+        [`brooch-${target}`, async () => {
+          await recolorTo(`c4-${target}`, await pattern("c4-summer", ARCADE_PROMPTS.brooch.summer, { colors: PALETTES.summer }), target);
+          await put(`c4-${target}`, { kind: "concept" });
+        }],
+        [`nails-${target}`, async () => {
+          await recolorTo(`c5-${target}`, await pattern("c5-summer", ARCADE_PROMPTS.nails.summer, { colors: PALETTES.summer }), target);
+          await put(`c5-${target}`, { kind: "concept" });
+        }],
+      ]),
+    ),
   };
 
   // group names accepted by --only
@@ -298,8 +354,9 @@ async function main() {
     nails: ["nails-summer", "nails-winter"],
     concept: ["brooch-summer", "brooch-winter", "nails-summer", "nails-winter"],
     charms: CHARMS.map((c) => c.key),
+    seasons: ["spring", "autumn"].flatMap((t) => [`scarf-${t}`, `ribbon-${t}`, `brooch-${t}`, `nails-${t}`]),
   };
-  const selected = Object.keys(tasks).filter((name) => wants(name) || Object.entries(groups).some(([g, members]) => wants(g) && only && members.includes(name)));
+  const selected = Object.keys(tasks).filter((name) => (only ? only.includes(name) || Object.entries(groups).some(([g, members]) => only.includes(g) && members.includes(name)) : !groups.seasons.includes(name)));
 
   log("pregen", `running: ${selected.join(", ")}`);
   const results = await Promise.allSettled(selected.map((name) => tasks[name]()));

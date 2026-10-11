@@ -10,7 +10,7 @@ let request: Promise<PackResponse> | null = null;
 
 /** The demo pack, then the same pack with live Arcade prices and fresh image URLs. */
 export function usePack(): State {
-  const pack = base as DemoPack;
+  const pack = base as unknown as DemoPack;
   const [state, setState] = useState<State>({ pieces: pack.pieces, live: false, loading: true, generatedAt: pack.generatedAt });
 
   useEffect(() => {

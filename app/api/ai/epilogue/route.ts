@@ -20,3 +20,6 @@ export async function POST(req: Request) {
     return Response.json({ error: aiError(e), source: "fallback" }, { status: 502 });
   }
 }
+
+// writing and lookup calls can take a while; give the function room
+export const maxDuration = 60;

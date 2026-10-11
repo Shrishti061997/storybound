@@ -17,6 +17,24 @@
   --on-highlight: #1F2A24;
 }
 
+:root[data-season="spring"] {
+  --paper: #FBF8F4;
+  --ink: #26302B;
+  --accent: #A8456B;
+  --accent-2: #8FCB9B;
+  --highlight: #F7C6D0;
+  --on-highlight: #26302B;
+}
+
+:root[data-season="autumn"] {
+  --paper: #FAF4EA;
+  --ink: #2B2118;
+  --accent: #9A4A1C;
+  --accent-2: #D98E32;
+  --highlight: #E9B44C;
+  --on-highlight: #2B2118;
+}
+
 :root[data-season="winter"] {
   --paper: #F6F9FC;
   --ink: #1B2733;
@@ -338,4 +356,22 @@ textarea:focus-visible, input:focus-visible, button:focus-visible, a:focus-visib
   :root { transition: none; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .ink-underline path { stroke-dashoffset: 0; }
+}
+
+/* ---- Wider screens: a real web layout, not a phone in a frame ---- */
+@media (min-width: 900px) {
+  body { padding: 0; background: var(--paper); }
+  .phone { max-width: none; min-height: 100dvh; border: 0; border-radius: 0; overflow: visible; }
+  .screen { width: 100%; max-width: 1160px; margin: 0 auto; padding: 28px 48px 0; }
+  .footer { width: 100%; max-width: 1160px; margin: 0 auto; padding: 22px 48px 30px; }
+  .masthead { padding-bottom: 18px; border-bottom: 1.5px solid var(--ink-faint); margin-bottom: 26px; }
+  .wordmark { font-size: 1.45rem; }
+  h1 { font-size: 4rem; }
+  h2 { font-size: 1.9rem; }
+  .lede { font-size: 1.22rem; max-width: 40ch; }
+  .dock { position: static; margin: 0; padding: 12px 0 40px; background: none; flex-direction: row; gap: 14px; }
+  .dock .btn { width: auto; min-width: 280px; padding-left: 28px; padding-right: 28px; }
+  .dock .btn-quiet { min-height: 52px; min-width: 0; }
+  .screen-body.narrow { max-width: 720px; }
+  .ink-underline { width: 260px; }
 }

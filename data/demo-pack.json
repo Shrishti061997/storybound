@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-11T21:06:40.157Z",
+  "generatedAt": "2026-10-11T21:31:16.636Z",
   "categories": {
     "Scarves": {
       "categoryId": "687b34ae-209d-461d-b681-4b0426400be8",
@@ -32,6 +32,233 @@
         "currency": "USD"
       },
       "image": "/demo/c1-summer-product.jpg"
+    },
+    "c5-summer": {
+      "key": "c5-summer",
+      "patternId": "cmv4btvj501v5lg1041kb8fm8",
+      "patternImage": "/demo/c5-summer-pattern.jpg",
+      "kind": "concept"
+    },
+    "c3-base": {
+      "key": "c3-base",
+      "patternId": "cmv4bu0s9020qpb104v05a9u7",
+      "patternImage": "/demo/c3-base-pattern.jpg"
+    },
+    "c4-summer": {
+      "key": "c4-summer",
+      "patternId": "cmv4bu2rs01v9lg10rybrh7j7",
+      "patternImage": "/demo/c4-summer-pattern.jpg",
+      "kind": "concept"
+    },
+    "c4-winter": {
+      "key": "c4-winter",
+      "patternId": "cmv4bucl5020ypb10q7xiqp8l",
+      "patternImage": "/demo/c4-winter-pattern.jpg",
+      "kind": "concept"
+    },
+    "c5-winter": {
+      "key": "c5-winter",
+      "patternId": "cmv4buav201wwpa10s9s2tfyg",
+      "patternImage": "/demo/c5-winter-pattern.jpg",
+      "kind": "concept"
+    },
+    "charm-3": {
+      "key": "charm-3",
+      "patternId": "cmv4bvl0d01xepa10biulndnj",
+      "patternImage": "/demo/charm-3-pattern.jpg",
+      "kind": "concept"
+    },
+    "charm-1": {
+      "key": "charm-1",
+      "patternId": "cmv4bvoxh01xipa105rtmswyc",
+      "patternImage": "/demo/charm-1-pattern.jpg",
+      "kind": "concept"
+    },
+    "charm-2": {
+      "key": "charm-2",
+      "patternId": "cmv4bvqcb01zylm10ftqsuv71",
+      "patternImage": "/demo/charm-2-pattern.jpg",
+      "kind": "concept"
+    },
+    "charm-5": {
+      "key": "charm-5",
+      "patternId": "cmv4bvvxt01xrpa10xzr1y7ij",
+      "patternImage": "/demo/charm-5-pattern.jpg",
+      "kind": "concept"
+    },
+    "charm-4": {
+      "key": "charm-4",
+      "patternId": "cmv4bw662020clm105wb8ehmf",
+      "patternImage": "/demo/charm-4-pattern.jpg",
+      "kind": "concept"
+    },
+    "c1-winter": {
+      "key": "c1-winter",
+      "patternId": "cmv4bw68g01xnlg1011227z7p",
+      "patternImage": "/demo/c1-winter-pattern.jpg",
+      "kind": "arcade",
+      "productId": "47ac7553-f9fc-4325-a7bd-d70b9b460724",
+      "title": "100% Cotton Lightweight Gauze Scarf, Embroidered Hem",
+      "selectionLabel": "Cotton Lightweight Gauze • 26\" x 26\" • Embroidered Hem",
+      "unitPrice": {
+        "amount": "19.41",
+        "currency": "USD"
+      },
+      "image": "/demo/c1-winter-product.jpg"
+    },
+    "c2-winter": {
+      "key": "c2-winter",
+      "kind": "arcade",
+      "productId": "8a2d2c31-ce42-43b5-aab5-17db48d111dd",
+      "patternId": "cmv4bwg2i020hlm10hwcamp2a",
+      "title": "14k Gold Vermeil Pendant Necklace",
+      "selectionLabel": "14k Gold Vermeil",
+      "unitPrice": {
+        "amount": "397.00",
+        "currency": "USD"
+      },
+      "image": "/demo/c2-winter-product.jpg"
+    },
+    "c2-summer": {
+      "key": "c2-summer",
+      "kind": "arcade",
+      "productId": "f76e9277-8411-4dfa-a2cf-97eafb194f16",
+      "patternId": "cmv4bwez3021vpb10mw1m0qcv",
+      "title": "925 Sterling Silver Pendant Necklace",
+      "selectionLabel": "925 Sterling Silver",
+      "unitPrice": {
+        "amount": "92.00",
+        "currency": "USD"
+      },
+      "image": "/demo/c2-summer-product.jpg"
+    },
+    "c3-summer": {
+      "key": "c3-summer",
+      "patternId": "cmv4bwzfy0221pb10gpgw9iuv",
+      "patternImage": "/demo/c3-summer-pattern.jpg",
+      "kind": "arcade",
+      "productId": "d8329790-2885-482e-a934-3d9a601755cc",
+      "title": "100% Silk Ribbon Scarf",
+      "selectionLabel": "100% Silk • 2\" x 35\"",
+      "unitPrice": {
+        "amount": "112.00",
+        "currency": "USD"
+      },
+      "image": "/demo/c3-summer-product.jpg"
+    },
+    "lamp-base": {
+      "key": "lamp-base",
+      "patternId": "cmv4bxi8q0225pb10h7wp10ni",
+      "patternImage": "/demo/lamp-base-pattern.jpg"
+    },
+    "c3-winter": {
+      "key": "c3-winter",
+      "patternId": "cmv4bxo6i020vlm10agh4ks7d",
+      "patternImage": "/demo/c3-winter-pattern.jpg",
+      "kind": "arcade",
+      "productId": "f51083fa-0b0b-41c6-9c2a-d8768a33d300",
+      "title": "100% Silk Ribbon Scarf",
+      "selectionLabel": "100% Silk • 2\" x 35\"",
+      "unitPrice": {
+        "amount": "112.00",
+        "currency": "USD"
+      },
+      "image": "/demo/c3-winter-product.jpg"
+    },
+    "lamp": {
+      "key": "lamp",
+      "patternId": "cmv4bz177021zlm107o0n44q3",
+      "patternImage": "/demo/lamp-pattern.jpg",
+      "kind": "arcade",
+      "productId": "8139b20b-b93c-47e8-b094-f4ddd4a85439",
+      "title": "Top 12\" x Bottom 12\" x Height 10\" Drum Lampshade",
+      "selectionLabel": "Top 12\" x Bottom 12\" x Height 10\"",
+      "unitPrice": {
+        "amount": "164.00",
+        "currency": "USD"
+      },
+      "image": "/demo/lamp-product.jpg"
+    },
+    "c1-autumn": {
+      "key": "c1-autumn",
+      "patternId": "cmv4c4bdc021klg103d0ub465",
+      "patternImage": "/demo/c1-autumn-pattern.jpg",
+      "kind": "arcade",
+      "productId": "ffb65101-628e-4ea8-a745-a6cc79b86ad1",
+      "title": "100% Cotton Lightweight Gauze Scarf, Embroidered Hem",
+      "selectionLabel": "Cotton Lightweight Gauze • 26\" x 26\" • Embroidered Hem",
+      "unitPrice": {
+        "amount": "19.41",
+        "currency": "USD"
+      },
+      "image": "/demo/c1-autumn-product.jpg"
+    },
+    "c3-autumn": {
+      "key": "c3-autumn",
+      "patternId": "cmv4c4dfb024rpa10p0y4bkao",
+      "patternImage": "/demo/c3-autumn-pattern.jpg",
+      "kind": "arcade",
+      "productId": "09d8793a-e229-402f-adbe-a47e1a430d05",
+      "title": "100% Silk Ribbon Scarf",
+      "selectionLabel": "100% Silk • 2\" x 35\"",
+      "unitPrice": {
+        "amount": "112.00",
+        "currency": "USD"
+      },
+      "image": "/demo/c3-autumn-product.jpg"
+    },
+    "c4-spring": {
+      "key": "c4-spring",
+      "patternId": "cmv4c4eq1021olg107ea2vthf",
+      "patternImage": "/demo/c4-spring-pattern.jpg",
+      "kind": "concept"
+    },
+    "c4-autumn": {
+      "key": "c4-autumn",
+      "patternId": "cmv4c4hb30249pb106vg9aj0z",
+      "patternImage": "/demo/c4-autumn-pattern.jpg",
+      "kind": "concept"
+    },
+    "c5-spring": {
+      "key": "c5-spring",
+      "patternId": "cmv4c4j9b021ulg10w8vx8uix",
+      "patternImage": "/demo/c5-spring-pattern.jpg",
+      "kind": "concept"
+    },
+    "c5-autumn": {
+      "key": "c5-autumn",
+      "patternId": "cmv4c4ne8023klm10vb5dfer1",
+      "patternImage": "/demo/c5-autumn-pattern.jpg",
+      "kind": "concept"
+    },
+    "c1-spring": {
+      "key": "c1-spring",
+      "patternId": "cmv4c7stg024mlm10136mcn3k",
+      "patternImage": "/demo/c1-spring-pattern.jpg",
+      "kind": "arcade",
+      "productId": "07083c96-bc5f-4756-a380-b1fe8fe0b0ce",
+      "title": "100% Cotton Lightweight Gauze Scarf, Embroidered Hem",
+      "selectionLabel": "Cotton Lightweight Gauze • 26\" x 26\" • Embroidered Hem",
+      "unitPrice": {
+        "amount": "19.41",
+        "currency": "USD"
+      },
+      "image": "/demo/c1-spring-product.jpg"
+    },
+    "c3-spring": {
+      "key": "c3-spring",
+      "patternId": "cmv4c7v5n026apa10flr0rdbr",
+      "patternImage": "/demo/c3-spring-pattern.jpg",
+      "kind": "arcade",
+      "productId": "74b9fc48-b927-442e-9f9a-53386a0b97e2",
+      "title": "100% Silk Ribbon Scarf",
+      "selectionLabel": "100% Silk • 2\" x 35\"",
+      "unitPrice": {
+        "amount": "112.00",
+        "currency": "USD"
+      },
+      "image": "/demo/c3-spring-product.jpg"
     }
-  }
+  },
+  "references": []
 }

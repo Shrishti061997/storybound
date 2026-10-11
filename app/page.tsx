@@ -11,7 +11,7 @@ export default function Welcome() {
         </span>
       </div>
 
-      <div className="screen-body">
+      <div className="screen-body welcome-grid">
         <div className="welcome-hero">
           <p className="eyebrow">A travel journal you can wear</p>
           <h1>
@@ -19,8 +19,8 @@ export default function Welcome() {
             <InkUnderline />
           </h1>
           <p className="lede">
-            A small piece to open each morning, made for the place you&rsquo;ll be standing, and a note on when the
-            light is best.
+            Tell us where you&rsquo;re going, the season and the mood. Each day gets a small piece made for the place
+            you&rsquo;ll be standing, and a note on when the light is best.
           </p>
         </div>
 
@@ -45,11 +45,11 @@ export default function Welcome() {
       </div>
 
       <div className="dock">
-        <Link className="btn" href="/trip?demo=1">
+        <Link className="btn" href="/trip">
           Start my story <ArrowIcon size={20} />
         </Link>
-        <Link className="btn btn-quiet" href="/trip">
-          Plan my own trip
+        <Link className="btn btn-quiet" href="/trip?demo=1">
+          Try it with a New York trip
         </Link>
       </div>
     </main>

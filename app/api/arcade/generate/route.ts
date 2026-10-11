@@ -6,12 +6,13 @@ export async function POST(req: Request) {
     const { requestId, prompt, colors, referenceIds, category } = await req.json();
     if (!requestId || !prompt) return Response.json({ error: "requestId and prompt are required" }, { status: 400 });
     let categoryId: string | undefined;
+    let jewelry = false;
     if (category) {
       const cat = findCategory(await listCategories(), category);
       if (!cat) return Response.json({ error: `Category "${category}" is not available` }, { status: 404 });
       categoryId = cat.categoryId;
+      jewelry = cat.world === "jewelry";
     }
-    const jewelry = Boolean(categoryId) && category === "Pendant Necklace";
     const job = await createPattern({
       requestId,
       prompt,

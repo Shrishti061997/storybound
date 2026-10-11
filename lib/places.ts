@@ -1,34 +1,48 @@
 // The New York State place library and the hand-written story. This is the fallback for every
 // writing call: if a model call fails, the app reads from here.
 
-import type { Season } from "@/components/Season";
+import type { DemoSeason, Season } from "@/components/Season";
 
-export type PieceType = "scarf" | "pendant" | "ribbon" | "brooch" | "nails";
+export type PieceType = "scarf" | "pendant" | "ribbon" | "pocket" | "brooch" | "nails";
+
+/** What each piece is, and which Arcade category makes it (mapped by name, never by ID). */
+export const PIECES: Record<PieceType, { label: string; kind: "arcade" | "concept"; category?: string }> = {
+  scarf: { label: "Scarf", kind: "arcade", category: "Scarves" },
+  pendant: { label: "Pendant", kind: "arcade", category: "Pendant Necklace" },
+  ribbon: { label: "Hair ribbon", kind: "arcade", category: "Ribbon Scarf" },
+  pocket: { label: "Pocket square", kind: "arcade", category: "Pocket Squares" },
+  brooch: { label: "Brooch", kind: "concept" },
+  nails: { label: "Stick-on nails", kind: "concept" },
+};
 export type BestWindow = "sunrise" | "midday" | "afternoon" | "goldenEvening";
 
 export type Chapter = {
   n: number;
   place: string;
   city: string;
-  lat: number;
-  lng: number;
+  lat: number | null;
+  lng: number | null;
   piece: PieceType;
   pieceLabel: string;
   kind: "arcade" | "concept";
-  category?: "Scarves" | "Pendant Necklace" | "Ribbon Scarf";
-  motif: Record<Season, string>;
+  category?: string;
+  /** Set for a trip of your own: the date, time zone and the Arcade prompt written for this day. */
+  date?: string | null;
+  tz?: string | null;
+  prompt?: string;
+  motif: Record<DemoSeason, string>;
   /** The only facts the photo coach may use. */
   fact: string;
-  title: Record<Season, string>;
-  line: Record<Season, string>;
-  why: Record<Season, string>;
+  title: Record<DemoSeason, string>;
+  line: Record<DemoSeason, string>;
+  why: Record<DemoSeason, string>;
   best: BestWindow;
   coach: { where: string; wear: string };
 };
 
 export const TIME_ZONE = "America/New_York";
 
-export const TRIP_DATES: Record<Season, string[]> = {
+export const TRIP_DATES: Record<DemoSeason, string[]> = {
   summer: ["2027-07-12", "2027-07-13", "2027-07-14", "2027-07-15", "2027-07-16"],
   winter: ["2026-12-14", "2026-12-15", "2026-12-16", "2026-12-17", "2026-12-18"],
 };
@@ -168,6 +182,31 @@ export const CHAPTERS: Chapter[] = [
     },
   },
 ];
+
+/** The New York example in all four seasons. Summer and winter copy lives on each chapter above. */
+export const DEMO_DATES: Record<Season, string[]> = {
+  spring: ["2027-04-12", "2027-04-13", "2027-04-14", "2027-04-15", "2027-04-16"],
+  summer: TRIP_DATES.summer,
+  autumn: ["2027-10-11", "2027-10-12", "2027-10-13", "2027-10-14", "2027-10-15"],
+  winter: TRIP_DATES.winter,
+};
+
+export const SEASON_COPY: Record<"spring" | "autumn", Record<number, { title: string; line: string; why: string }>> = {
+  spring: {
+    1: { title: "Blossom on the old rails", line: "The garden is waking up, one bud at a time.", why: "The rails again, with the first blossom in pink and new green." },
+    2: { title: "A soft bright crossing", line: "Cool air, clear light, and the whole walk ahead of you.", why: "Two stone arches and a fan of cables, small enough to sit at your collar." },
+    3: { title: "Blossom under the elms", line: "Petals on the paths and a slow day ahead.", why: "A repeat of new leaves and little footbridges, in blossom pink." },
+    4: { title: "The lake wakes up", line: "Meltwater, new green, and cold clear air.", why: "A small round lake scene to pin where a pocket would be, in spring colors." },
+    5: { title: "Mist and new green", line: "The last chapter is loud, wet, and worth every step.", why: "Ten tiny falls and one rainbow, in the soft colors of spring." },
+  },
+  autumn: {
+    1: { title: "Gold grass above the avenue", line: "Tall grasses turn copper and the light comes in low.", why: "The same rails and grasses, in the rust and gold of October." },
+    2: { title: "Low sun on the cables", line: "The morning arrives golden across the river.", why: "The same arches in warm metal, for a morning that needs it." },
+    3: { title: "The elms turn gold", line: "Leaves underfoot, and nowhere you need to be.", why: "The same repeat in rust and gold, like the paths in October." },
+    4: { title: "Color on the hillsides", line: "The hills turn red and the water keeps their picture.", why: "The lake again, ringed in rust and gold." },
+    5: { title: "The falls in gold light", line: "Low sun in the mist and color on every bank.", why: "Ten tiny falls in rust and gold, for the hand you hold up to the mist." },
+  },
+};
 
 export const DEMO_ITINERARY = `New York State, 5 days
 

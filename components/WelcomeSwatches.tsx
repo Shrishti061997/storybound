@@ -8,7 +8,7 @@ const SHOWN = [
 ];
 
 export function WelcomeSwatches() {
-  const pieces = (pack as DemoPack).pieces;
+  const pieces = (pack as unknown as DemoPack).pieces;
   return (
     <div className="welcome-swatches">
       {SHOWN.map((s, i) => {

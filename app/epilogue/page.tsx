@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import { InkDivider, InkUnderline } from "@/components/Ink";
 import { Masthead } from "@/components/Masthead";
 import { useSeason } from "@/components/Season";
+import { useStory } from "@/components/useStory";
 import { api, useJob } from "@/components/useJob";
 import { livePrice, patternImage, productImage, usePack } from "@/components/usePack";
 import { formatMoney, type Money } from "@/lib/pack";
 import { mergeColors } from "@/lib/palettes";
-import { CHAPTERS, CHARMS, TRAVELERS, type Charm } from "@/lib/places";
-import { ARCADE_PROMPTS, LAMPSHADE_MOTIFS } from "@/lib/prompts";
+import { CHARMS, TRAVELERS, type Charm } from "@/lib/places";
+import { ARCADE_PROMPTS } from "@/lib/prompts";
 
 type Photo = { name: string; dataUrl: string; blob: Blob };
 type FreshLamp = { patternUrl?: string; productId?: string; imageUrl?: string; price?: Money | null };
@@ -39,6 +40,7 @@ function onChain(t: number) {
 export default function EpiloguePage() {
   const { season } = useSeason();
   const pack = usePack();
+  const story = useStory();
   const lampJob = useJob();
   const productJob = useJob();
   const [photos, setPhotos] = useState<Photo[]>([]);
@@ -56,11 +58,22 @@ export default function EpiloguePage() {
 
   useEffect(() => {
     try {
-      if (sessionStorage.getItem(WRITTEN_KEY)) setWritten(true);
+      if (story.isDemo && sessionStorage.getItem(WRITTEN_KEY)) setWritten(true);
     } catch {
       // ignore
     }
-  }, []);
+  }, [story.isDemo]);
+
+  // a trip of your own: the list starts from your chapters
+  const ownKey = story.isDemo ? "" : story.chapters.map((c) => c.place).join("|");
+  useEffect(() => {
+    if (!ownKey) return;
+    const own = ownKey.split("|").map((label, i) => ({ key: `own-${i}`, label, symbol: label }));
+    setAchievements(own.map((c) => c.label));
+    setCharms(own);
+  }, [ownKey]);
+
+  const motifs = story.chapters.map((c) => c.motif[story.ds]);
 
   async function addPhotos(files: FileList | null) {
     if (!files) return;
@@ -78,8 +91,8 @@ export default function EpiloguePage() {
     let best = photos.slice(0, 3);
     try {
       const out = await api.post<{ charms: { label: string; symbol: string }[]; bestPhotos: number[] }>("/api/ai/epilogue", {
-        chapters: CHAPTERS.map((c) => `${c.place}: ${c.motif[season]}`),
-        steps: "12 miles",
+        chapters: story.chapters.map((c) => `${c.place}: ${c.motif[story.ds]}`),
+        steps: story.isDemo ? "12 miles" : "",
         achievements,
         photos: photos.map((p) => p.dataUrl),
       });
@@ -92,19 +105,20 @@ export default function EpiloguePage() {
       setCurating(false);
       setWritten(true);
       try {
-        sessionStorage.setItem(WRITTEN_KEY, "1");
+        if (story.isDemo) sessionStorage.setItem(WRITTEN_KEY, "1");
       } catch {
         // ignore
       }
     }
-    if (best.length && consent) void lampFromPhotos(best);
+    // your own photos guide the scene when you have agreed; a trip of your own always gets a new lampshade
+    if ((best.length && consent) || !story.isDemo) void lampFromPhotos(consent ? best : []);
   }
 
   // upload up to 3 photos as references -> pattern -> lampshade product, each as a polled Arcade job
   async function lampFromPhotos(best: Photo[]) {
     const run = Date.now().toString(36);
     try {
-      setStep("Sending your photos to Arcade…");
+      if (best.length) setStep("Sending your photos to Arcade…");
       const referenceIds: string[] = [];
       for (const [i, p] of best.entries()) {
         const form = new FormData();
@@ -118,9 +132,9 @@ export default function EpiloguePage() {
       setStep("Painting your trip around the shade…");
       const made = await lampJob.start("/api/arcade/generate", {
         requestId: `epilogue-${run}-pattern`,
-        prompt: ARCADE_PROMPTS.lampshade(LAMPSHADE_MOTIFS[season]),
+        prompt: ARCADE_PROMPTS.lampshade(motifs).slice(0, 990),
         colors: mergeColors(season),
-        referenceIds,
+        ...(referenceIds.length ? { referenceIds } : {}),
       });
       if (made.status !== "succeeded" || !made.patternId) throw new Error(made.error || "The scene could not be painted");
       const pattern = await api.post<{ imageUrl: string }>("/api/arcade/pattern", { patternId: made.patternId });
@@ -137,11 +151,11 @@ export default function EpiloguePage() {
       setStep(null);
     } catch (e) {
       setStep(null);
-      setNote(`${e instanceof Error ? e.message : "Something went wrong"} The lampshade from this morning is shown instead.`);
+      setNote(`${e instanceof Error ? e.message : "Something went wrong"}${story.isDemo ? " The lampshade from this morning is shown instead." : ""}`);
     }
   }
 
-  const lamp = pack.pieces["lamp"];
+  const lamp = story.isDemo ? pack.pieces["lamp"] : undefined;
   const lampProductId = fresh?.productId || lamp?.productId;
   const lampImage = fresh?.imageUrl || productImage(lamp);
   const lampPattern = fresh?.patternUrl || patternImage(lamp);
@@ -251,11 +265,11 @@ export default function EpiloguePage() {
             </section>
             <div className="lamp-meta">
               <span className={`badge ${lampProductId ? "badge-made" : "badge-preview"}`}>{lampProductId ? "Made with Arcade" : "Design preview"}</span>
-              <span className="small">{fresh?.productId ? "Made from your photos just now" : fresh?.patternUrl ? "Painted from your photos just now" : "Made this morning"}</span>
+              <span className="small">{fresh?.productId ? "Made for you just now" : fresh?.patternUrl ? "Painted just now" : lampProductId ? "Made this morning" : "Being painted"}</span>
               <span className="price">{formatMoney(lampPrice) || (pack.loading && lampProductId ? "…" : "")}</span>
             </div>
             {step ? <p className="notice" role="status">{step} This takes a few minutes.</p> : null}
-            <p className="why">Switch it on and the whole trip glows: rails, bridge, elms, lake and falls, in one unbroken line.</p>
+            <p className="why">{story.isDemo ? "Switch it on and the whole trip glows: rails, bridge, elms, lake and falls, in one unbroken line." : "Switch it on and the whole trip glows, every chapter in one unbroken line."}</p>
 
             <InkDivider />
 
@@ -297,7 +311,7 @@ export default function EpiloguePage() {
                 {activeCharm ? <strong>{activeCharm.label}</strong> : "Tap a charm to read it."}
               </p>
               <p className="small">
-                <span className="badge badge-preview">Design preview</span> Charm art designed with Arcade. The three beads are {TRAVELERS.map((t) => t.name).join(", ")}.
+                <span className="badge badge-preview">Design preview</span> {story.isDemo ? `Charm art designed with Arcade. The three beads are ${TRAVELERS.map((t) => t.name).join(", ")}.` : "One charm for each chapter, and a bead for each traveler."}
               </p>
             </section>
           </>

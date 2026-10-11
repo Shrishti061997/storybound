@@ -1,7 +1,9 @@
 import type { Season } from "@/components/Season";
 
 export const PALETTES: Record<Season, string[]> = {
+  spring: ["#F7C6D0", "#A8456B", "#8FCB9B", "#FFFFFF", "#F2E394"],
   summer: ["#2D6A4F", "#74C69D", "#48CAE4", "#FFFFFF", "#FFD166"],
+  autumn: ["#9A4A1C", "#D98E32", "#E9B44C", "#5B6B3A", "#FAF4EA"],
   winter: ["#FFFFFF", "#CAE9FF", "#5FA8D3", "#1B4965", "#9D0208"],
 };
 
@@ -32,6 +34,14 @@ export function toWinter(hex: string): string {
   if (s > 0.45 && l > 0.3 && l < 0.85 && (h < 75 || h > 330)) return "#9D0208";
   const cool = ["#FFFFFF", "#CAE9FF", "#5FA8D3", "#1B4965"];
   return cool.reduce((best, c) => (Math.abs(hsl(c).l - l) < Math.abs(hsl(best).l - l) ? c : best), cool[0]);
+}
+
+/** Recolor target for any season: each cluster moves to the season color of the closest lightness. */
+export function toSeason(hex: string, target: Season): string {
+  if (target === "winter") return toWinter(hex);
+  const palette = PALETTES[target];
+  const l = hsl(hex).l;
+  return palette.reduce((best, c) => (Math.abs(hsl(c).l - l) < Math.abs(hsl(best).l - l) ? c : best), palette[0]);
 }
 
 /** Merge outfit colors with the season palette, 10 colors at most (Arcade's limit). */

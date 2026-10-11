@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 // GET -> the demo pack with live prices and fresh image URLs (they expire, so they are re-fetched here).
 export async function GET() {
-  const base = pack as DemoPack;
+  const base = pack as unknown as DemoPack;
   const pieces: Record<string, LivePiece> = structuredClone(base.pieces);
   let reached = 0;
   let lastError: string | undefined;
@@ -30,3 +30,6 @@ export async function GET() {
 
   return Response.json({ generatedAt: base.generatedAt, pieces, live: reached > 0, error: lastError });
 }
+
+// writing and lookup calls can take a while; give the function room
+export const maxDuration = 60;

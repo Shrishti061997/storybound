@@ -240,3 +240,56 @@
 .charm:focus-visible circle, .charm.active circle { stroke: var(--accent); stroke-width: 3; }
 .charm-initial { font-family: var(--serif); font-size: 18px; fill: var(--ink); }
 .charm-label { margin-top: 2px; min-height: 28px; font-family: var(--serif); font-size: 1.1rem; }
+
+/* ---- season tag, four-way season control, leaf particles ---- */
+.season-tag { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border: 1.5px solid var(--ink); border-radius: 24px 22px 25px 23px; color: var(--ink); text-decoration: none; font-size: 0.82rem; font-weight: 500; white-space: nowrap; }
+.season-four { display: inline-flex; }
+.season-four button { min-width: 40px; padding: 0 8px; }
+.chip-icon { display: inline-flex; align-items: center; gap: 6px; }
+.leaf { width: 12px; height: 9px; border-radius: 90% 8% 90% 8%; background: var(--accent-2); border: 1px solid var(--ink-faint); }
+.leaf:nth-child(odd) { background: var(--accent); }
+:root[data-season="spring"] .petal { background: var(--highlight); }
+:root[data-season="spring"] .petal:nth-child(odd) { background: #fff; }
+.door-retry { margin-top: 6px; padding-left: 8px; }
+
+/* ---- Trip: editable days ---- */
+.day-rows { list-style: none; margin: 14px 0 16px; padding: 0; display: grid; gap: 14px; }
+.day-rows li { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: center; padding-bottom: 14px; border-bottom: 1px dashed var(--ink-faint); }
+.day-rows li > .eyebrow { grid-column: 1 / -1; }
+.day-rows li > input:first-of-type { grid-column: 1 / -1; }
+.day-rows input[type="date"] { width: 100%; font: inherit; color: var(--ink); background: color-mix(in srgb, var(--paper) 80%, #fff); border: 1.5px solid var(--ink); border-radius: 3px 4px 3px 5px; padding: 11px 10px; min-height: 46px; }
+.day-rows .linkish { grid-column: 1 / -1; justify-self: start; min-height: 32px; font-size: 0.85rem; }
+
+@media (min-width: 900px) {
+  .h-page { font-size: 3rem; }
+  .welcome-grid { display: grid; grid-template-columns: 1.05fr 1fr; column-gap: 72px; align-items: start; }
+  .welcome-grid .welcome-hero { padding-top: 34px; }
+  .welcome-grid .welcome-swatches { margin-top: 24px; grid-row: span 3; }
+  .welcome-grid .ink-divider { grid-column: 1; }
+  .welcome-grid .welcome-steps { grid-column: 1; }
+  .welcome-swatch figcaption { font-size: 0.72rem; }
+  .welcome-note { font-size: 1.7rem; bottom: -44px; }
+
+  .doors { grid-template-columns: 1fr 1fr; gap: 30px 34px; }
+  .door { grid-template-columns: 1fr 168px; padding: 34px 26px 24px; min-height: 100%; }
+  .door-flip { grid-template-columns: 168px 1fr; }
+  .door-art .piece-art.swatch { width: 156px; }
+  .door-art .brooch { width: 148px; height: 148px; }
+  .door-art .nails { transform: scale(1.5) rotate(var(--tilt, 1deg)); margin: 22px 0; }
+  .door-title { font-size: 1.5rem; }
+  .story-foot { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: start; }
+  .story-foot .epilogue-teaser { margin-top: 8px; }
+  .story-tools { max-width: 720px; }
+
+  .chapter-grid { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr); column-gap: 64px; align-items: start; }
+  .chapter-right > .ink-divider:first-child { display: none; }
+  .chapter-art { margin: 28px 0 0; max-width: 460px; }
+  .why { font-size: 1.3rem; max-width: 34ch; }
+  .dock-row .btn-quiet { flex: 0 0 auto; }
+
+  .epilogue .screen-body { max-width: 860px; }
+  .lamp-stage { min-height: 420px; }
+  .lamp-photo { width: 62%; }
+  .day-rows li { grid-template-columns: 64px 2fr 1.2fr 170px auto; }
+  .day-rows li > .eyebrow, .day-rows li > input:first-of-type, .day-rows .linkish { grid-column: auto; }
+}
