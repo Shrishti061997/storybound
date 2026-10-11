@@ -294,3 +294,13 @@
   .day-rows li { grid-template-columns: 64px 2fr 1.2fr 170px auto; }
   .day-rows li > .eyebrow, .day-rows li > input:first-of-type, .day-rows .linkish { grid-column: auto; }
 }
+
+/* ---- photo note: when to be there and where to stand, on every door and at the top of each day card ---- */
+.door-photo { grid-column: 1 / -1; display: grid; gap: 7px; margin-top: 2px; padding-top: 12px; border-top: 1px dashed var(--ink-soft); font-size: 0.88rem; line-height: 1.4; }
+.door-photo > span { display: grid; grid-template-columns: 18px 1fr; gap: 7px; align-items: start; }
+.door-photo svg { margin-top: 2px; }
+.door-photo strong { font-weight: 600; }
+.door-photo .door-open { display: inline-flex; align-items: center; gap: 6px; margin-top: 2px; color: var(--accent); font-weight: 600; }
+.photo-note { display: grid; gap: 12px; margin-top: 16px; padding: 18px 20px; background: var(--paper-deep); outline: 1.5px dashed var(--ink-soft); outline-offset: -6px; border-radius: 3px 5px 4px 6px; }
+.photo-note p { margin-top: 3px; font-family: var(--serif); font-size: 1.08rem; line-height: 1.35; }
+.coach-title { margin-top: 26px; }

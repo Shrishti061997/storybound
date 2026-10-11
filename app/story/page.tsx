@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { ArrowIcon, InkDivider, InkUnderline, LampIcon, PinIcon } from "@/components/Ink";
+import { ArrowIcon, InkDivider, InkUnderline, LampIcon, PinIcon, SunIcon } from "@/components/Ink";
 import { Masthead } from "@/components/Masthead";
 import { PieceArt } from "@/components/PieceArt";
 import { SEASON_LABEL, SeasonIcon, SeasonToggle, useSeason, type DemoSeason } from "@/components/Season";
@@ -12,13 +12,27 @@ import { livePrice } from "@/components/usePack";
 import { useStory } from "@/components/useStory";
 import { useTrip } from "@/components/useTrip";
 import { formatMoney } from "@/lib/pack";
-import { CHAPTERS, roman } from "@/lib/places";
+import { CHAPTERS, roman, TIME_ZONE, type Chapter } from "@/lib/places";
+import { formatTime, sunDay } from "@/lib/sun";
 
 type Written = Record<DemoSeason, { n: number; title: string; line: string }[]>;
 const STORY_KEY = "storybound.story.v2";
 const COUNT = ["no", "one", "two", "three", "four", "five", "six", "seven"];
 
 const shortDate = (iso?: string | null) => (iso ? new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", timeZone: "UTC" }).format(new Date(`${iso}T12:00:00Z`)) : null);
+
+/** When to be there: the best light window, calculated for that place and date. */
+function beThere(c: Chapter): string | null {
+  if (c.lat === null || c.lng === null) return null;
+  try {
+    const date = c.date || new Date(Date.now() + (c.n - 1) * 86_400_000).toISOString().slice(0, 10);
+    const tz = c.tz || TIME_ZONE;
+    const sun = sunDay(date, c.lat, c.lng, c.best);
+    return `${sun.window.label}, ${formatTime(sun.window.start, tz)} to ${formatTime(sun.window.end, tz)}`;
+  } catch {
+    return null;
+  }
+}
 
 function hash(s: string) {
   let h = 5381;
@@ -190,6 +204,27 @@ export default function StoryPage() {
                   <span className="door-art">
                     <PieceArt chapter={c} piece={piece} hidden={trip.surprise} tilt={c.n % 2 ? "2deg" : "-2deg"} />
                     <span className="small door-piece">{trip.surprise ? "Sealed until the day" : c.pieceLabel}</span>
+                  </span>
+                  <span className="door-photo">
+                    {beThere(c) ? (
+                      <span>
+                        <SunIcon size={16} />
+                        <span>
+                          <strong>Be there</strong> {beThere(c)}
+                        </span>
+                      </span>
+                    ) : null}
+                    {c.coach.where ? (
+                      <span>
+                        <PinIcon size={16} />
+                        <span>
+                          <strong>Stand</strong> {c.coach.where}
+                        </span>
+                      </span>
+                    ) : null}
+                    <span className="door-open">
+                      Open the day card for the angle and how to wear it <ArrowIcon size={16} />
+                    </span>
                   </span>
                 </a>
                 {status === "failed" ? (

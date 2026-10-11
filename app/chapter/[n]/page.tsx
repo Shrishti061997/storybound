@@ -134,6 +134,17 @@ export default function ChapterPage() {
           <PinIcon size={15} /> {[c.place, c.city].filter(Boolean).join(", ")}
         </p>
 
+        <aside className="photo-note" aria-label="Your photo for this chapter">
+          <div>
+            <span className="eyebrow">Be there</span>
+            <p>{sun ? `${sun.window.label}, ${formatTime(sun.window.start, tz)} to ${formatTime(sun.window.end, tz)}` : "We couldn't place this spot on the map, so there are no sun times for it yet."}</p>
+          </div>
+          <div>
+            <span className="eyebrow">Stand</span>
+            <p>{coach.where}</p>
+          </div>
+        </aside>
+
         <div className={`chapter-art ${isScarf ? "reveal" : ""} ${revealed ? "revealed" : ""}`}>
           <span className="tape" aria-hidden="true" />
           {made ? (
@@ -178,6 +189,7 @@ export default function ChapterPage() {
           </section>
         ) : null}
 
+        <h2 className="coach-title">Your photo, step by step</h2>
         <dl className="coach">
           <div>
             <dt className="eyebrow">When</dt>
